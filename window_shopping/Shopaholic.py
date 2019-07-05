@@ -96,7 +96,7 @@ class Shopaholic(object):
 			matrix['name'] = each_product['name']
 			matrix['picture'] = each_product['images']['large_urls'][0]
 			matrix['link'] = each_product['url']
-			matrix['price'] = each_product['price']
+			matrix['price'] = 'Rp {:,}'.format(each_product['price']).replace(',','.')
 			product = Product(**matrix)
 			parsed_product.append(copy.copy(product))
 
