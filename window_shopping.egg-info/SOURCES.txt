@@ -5,6 +5,10 @@ development.ini
 production.ini
 pytest.ini
 setup.py
+window_shopping/FileLogger.py
+window_shopping/JSONSerializeable.py
+window_shopping/Scrapper.py
+window_shopping/Shopaholic.py
 window_shopping/__init__.py
 window_shopping/tests.py
 window_shopping/views.py

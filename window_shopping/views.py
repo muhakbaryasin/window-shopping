@@ -11,8 +11,15 @@ def fetch_products(request):
 	shop.setUrlBL('https://www.bukalapak.com/u/toko_berkat_melimpah')
 	shop.setStoreIdBL('71665369')
 	shop.setUrlToped('https://www.tokopedia.com/tkberkatmelimpah')
-	tes = shop.daemonize()
-	import pdb; pdb.set_trace()
+	stores = []
+	stores = shop.daemonize()
+	
+	the_list = []
+	
+	for each_store in stores:
+		the_list += each_store
+		
 	#anu = {}
-	#tes = shop.fetchProductToped(1, anu)
-	return {'project': 'window-shopping', 'products': tes}
+	#tes = shop.fetchProductBL(1, anu)
+	#print(tes)
+	return {'project': 'window-shopping', 'products': the_list}

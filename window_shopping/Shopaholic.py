@@ -74,24 +74,20 @@ class Shopaholic(object):
 
 		#if (number_per_page == 40 or number_per_page == 20):
 		#url_target += '?perpage=' + str(number_per_page)
-
-		url = 'http://localhost:2233/rest'
-		response = post(url, data = {'url': url_target, 'method' : 'GET', })
-		strip_ = response.text.replace('\n', '').replace('\\u002F', '/').replace('\\"','"')
-
+		scrapper = Scrapper()
+		strip_ = scrapper.requestData(url=url_target)
+		
 		url_req_token = 'https://www.bukalapak.com/auth_proxies/request_token'
 
-		url = 'http://localhost:2233/rest'
-		response = post(url, data = {'url': url_req_token, 'method' : 'POST', })
-		token = json.loads(response.text)['data']['access_token']
+		response = scrapper.requestData(url=url_req_token, method='POST')
+		token = json.loads(response.decode('utf-8'))['access_token']
 
 		offset = 0
 
-		url_product = 'https://api.bukalapak.com/stores/' + self.store_id_bl + '/products?offset=' + str(offset) +' &limit=16&sort=bestselling&access_token=' + token
+		url_product = 'https://api.bukalapak.com/stores/' + self.store_id_bl + '/products?offset=' + str(offset) + '&limit=16&sort=bestselling&access_token=' + token
 
-		url = 'http://localhost:2233/rest'
-		response = post(url, data = {'url': url_product, 'method' : 'GET', })
-		products = json.loads(response.text)['data']['data']
+		response = scrapper.requestData(url=url_product)
+		products = json.loads(response.decode('utf-8'))['data']
 
 		parsed_product = []
 
