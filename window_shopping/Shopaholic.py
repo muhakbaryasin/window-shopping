@@ -5,8 +5,10 @@ import json
 import multiprocessing
 from time import sleep
 import sys
+from .Scrapper import Scrapper
+from .JSONSerializeable import JSONSerializeable
 
-class Product(object):
+class Product(JSONSerializeable):
 	def __init__(self, name=None, price=None, picture=None, link=None):
 		self.name = name
 		self.price = price
@@ -33,19 +35,39 @@ class Shopaholic(object):
 	def setStoreIdBL(self, store_id):
 		self.store_id_bl = store_id
 	
-	def setUrlBL(url, url_bl):
+	def setUrlBL(self, url_bl):
 		self.url_bl = url_bl
 	
 	def setUrlToped(self, url):
 		self.url_toped = url
 	
-	def fetchProductBL(self):
+	def daemonize(self):
+		manager = multiprocessing.Manager()
+		return_dict = manager.dict()
+		
+		jobs = []
+		p_bl = multiprocessing.Process(target=self.fetchProductBL, args=(0,return_dict))
+		p_bl.daemon = True
+		jobs.append(p_bl)
+		p_bl.start()
+		p_tp = multiprocessing.Process(target=self.fetchProductToped, args=(1,return_dict))
+		p_tp.daemon = True
+		jobs.append(p_tp)
+		p_tp.start()
+		
+		for proc in jobs:
+			proc.join()
+		
+		return return_dict.values()
+		
+	
+	def fetchProductBL(self, procnum, return_dict):
 		number_per_page = 80
 		page_number = 1
 		# url_toko = 'https://www.bukalapak.com/u/toko_berkat_melimpah'
 		# store_id = '71665369'
 
-		url_target = url_bl
+		url_target = self.url_bl
 
 		if (page_number > 1):
 			url_target += '?page=' + str(page_number)
@@ -79,14 +101,14 @@ class Shopaholic(object):
 			matrix['picture'] = each_product['images']['large_urls'][0]
 			matrix['link'] = each_product['url']
 			matrix['price'] = each_product['price']
-			product = Product(matrix**)
+			product = Product(**matrix)
 			parsed_product.append(copy.copy(product))
 
 		print(parsed_product)
-		return parsed_product
+		return_dict[procnum] = parsed_product
 	
 	
-	def fetchProductToped(self):
+	def fetchProductToped(self, procnum, return_dict):
 		number_per_page = 80
 		page_number = 1
 		url_target = self.url_toped
@@ -96,10 +118,10 @@ class Shopaholic(object):
 
 		if (number_per_page == 40 or number_per_page == 20):
 			url_target += '?perpage=' + str(number_per_page)
-
-		url = 'http://localhost:2233/rest'
-		response = post(url, data = {'url': url_target, 'method' : 'GET', })
-		strip_ = response.text.replace('\n', '').replace('\\u002F', '/').replace('\\"','"')
+			
+		scrapper = Scrapper()
+		strip_ = scrapper.requestData(url=url_target)
+		#strip_ = response.text.replace('\n', '').replace('\\u002F', '/').replace('\\"','"')
 		products = pq(strip_)('a.css-aobwgn')
 
 		parsed_product = []
@@ -111,10 +133,10 @@ class Shopaholic(object):
 			matrix['picture'] = pq(each_product)('div img').attr('src')
 			matrix['link'] = pq(each_product)('a').attr('href')
 			matrix['price'] = pq(each_product)('div .css-merchant-mqaiMy5d').text()
-			product = Product(matrix**)
+			product = Product(**matrix)
 			parsed_product.append(copy.copy(product))
 
 		print(parsed_product)
 		print(number_per_page)
 		
-		return parsed_product
+		return_dict[procnum] = parsed_product
