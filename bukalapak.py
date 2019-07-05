@@ -1,4 +1,3 @@
-import pdb
 from requests import Request, post
 from pyquery import PyQuery as pq
 import copy
@@ -46,5 +45,4 @@ for each_product in products:
 	parsed_product.append(copy.copy(matrix))
 
 print(parsed_product)
-pdb.set_trace()
 
