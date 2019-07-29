@@ -1,6 +1,8 @@
-from requests import Request, post
+import pdb
+from requests import Request, get
 from pyquery import PyQuery as pq
 import copy
+from .window-shopping.Scrapper import Scrapper
 
 number_per_page = 80
 page_number = 1
@@ -14,8 +16,9 @@ if (page_number > 1):
 if (number_per_page == 40 or number_per_page == 20):
 	url_target += '?perpage=' + str(number_per_page)
 
-url = 'http://localhost:2233/rest'
-response = post(url, data = {'url': url_target, 'method' : 'GET', })
+scraper = Scrapper()
+response_data = scrapper.requestData(url=url_target)
+import pdb; pdb.set_trace()
 strip_ = response.text.replace('\n', '').replace('\\u002F', '/').replace('\\"','"')
 products = pq(strip_)('a.css-aobwgn')
 

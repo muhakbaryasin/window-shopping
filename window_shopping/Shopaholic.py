@@ -9,11 +9,15 @@ from .Scrapper import Scrapper
 from .JSONSerializeable import JSONSerializeable
 
 class Product(JSONSerializeable):
-	def __init__(self, name=None, price=None, picture=None, link=None):
+	def __init__(self, fullname=None, name=None, price=None, picture=None, link=None):
 		self.name = name
 		self.price = price
 		self.picture = picture
 		self.link = link
+		self.fullname = fullname
+	
+	def setFullName(self, full_name):
+		self.full_name = full_name
 	
 	def setName(self, name):
 		self.name = name
@@ -46,10 +50,10 @@ class Shopaholic(object):
 		return_dict = manager.dict()
 		
 		jobs = []
-		p_bl = multiprocessing.Process(target=self.fetchProductBL, args=(0,return_dict))
-		p_bl.daemon = True
-		jobs.append(p_bl)
-		p_bl.start()
+		#p_bl = multiprocessing.Process(target=self.fetchProductBL, args=(0,return_dict))
+		#p_bl.daemon = True
+		#jobs.append(p_bl)
+		#p_bl.start()
 		p_tp = multiprocessing.Process(target=self.fetchProductToped, args=(1,return_dict))
 		p_tp.daemon = True
 		jobs.append(p_tp)
@@ -93,7 +97,13 @@ class Shopaholic(object):
 
 		for each_product in products:
 			matrix = {}
-			matrix['name'] = each_product['name']
+			matrix['fullname'] = each_product['name']
+			
+			if len(matrix['fullname']) > 50:
+				matrix['name'] = each_product['name'][:45] + " ... "
+			else:
+				matrix['name'] = each_product['name']
+			
 			matrix['picture'] = each_product['images']['large_urls'][0]
 			matrix['link'] = each_product['url']
 			matrix['price'] = 'Rp {:,}'.format(each_product['price']).replace(',','.')
@@ -125,7 +135,13 @@ class Shopaholic(object):
 
 		for each_product in products:
 			matrix = {}
-			matrix['name'] = pq(each_product)('div .css-merchant-2xnEppWk').text()
+			matrix['fullname'] = pq(each_product)('div .css-merchant-2xnEppWk').text()
+			
+			if len(matrix['fullname']) > 50:
+				matrix['name'] = matrix['fullname'][:45] + " ... "
+			else:
+				matrix['name'] = matrix['fullname']
+			
 			matrix['picture'] = pq(each_product)('div img').attr('src')
 			matrix['link'] = pq(each_product)('a').attr('href')
 			matrix['price'] = pq(each_product)('div .css-merchant-mqaiMy5d').text()

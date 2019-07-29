@@ -1,0 +1,109 @@
+{% block content%}
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Float four columns side by side */
+.column {
+  float: left;
+  width: 25%;
+  padding: 0 10px;
+}
+
+/* Remove extra left and right margins, due to padding in columns */
+.row {margin: 0 -5px;}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Style the counter cards */
+
+/* Responsive columns - one column layout (vertical) on small screens */
+@media screen and (max-width: 600px) {
+  .column {
+    width: 100%;
+    display: block;
+    margin-bottom: 20px;
+  }
+}
+
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  max-width: 300px;
+  margin: auto;
+  text-align: center;
+  font-family: arial;
+}
+
+.price {
+	font-size: 14px;
+	font-weight: 600;
+	color: #ff5722;
+	white-space: nowrap;
+}
+
+.card button {
+  border: none;
+  outline: 0;
+  padding: 12px;
+  color: white;
+  background-color: #c94f36;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+  font-size: 18px;
+}
+
+.card button:hover {
+  opacity: 0.7;
+}
+
+#title {
+	display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    margin: 0;
+    max-height: 38px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 19px;
+    overflow: hidden;
+    color: #4c4c4c;
+    word-wrap: break-word;
+}
+
+.inner-container {
+	padding-top: 10px;
+	padding-right: 10px;
+	padding-left: 10px;
+	min-height: 90px;
+}
+
+</style>
+<div class="row">
+{% for product in products %}
+<div class="column">
+	<div class="card">
+		<div style="height: 200px; overflow:hidden">
+			<img src="{{product.picture}}" alt="Denim Jeans" style="width:100%">
+		</div>
+		<div class="inner-container">
+			<h3 id="title">{{product.name}}</h3>
+			<p class="price">{{product.price}}</p>
+		</div>
+		<p><button onclick="window.top.location.href = '{{product.link}}'">Buy</button></p>
+	</div>
+</div>
+{% endfor %}
+</div>
+{% endblock content %}
