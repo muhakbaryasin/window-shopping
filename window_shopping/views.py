@@ -22,4 +22,4 @@ def fetch_products(request):
 	#anu = {}
 	#tes = shop.fetchProductBL(1, anu)
 	#print(tes)
-	return {'project': 'window-shopping', 'products': the_list}
+	return {'code': 'OK', 'data': {'products': the_list}, 'message' : ''}
