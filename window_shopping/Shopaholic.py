@@ -50,10 +50,10 @@ class Shopaholic(object):
 		return_dict = manager.dict()
 		
 		jobs = []
-		#p_bl = multiprocessing.Process(target=self.fetchProductBL, args=(0,return_dict))
-		#p_bl.daemon = True
-		#jobs.append(p_bl)
-		#p_bl.start()
+		p_bl = multiprocessing.Process(target=self.fetchProductBL, args=(0,return_dict))
+		p_bl.daemon = True
+		jobs.append(p_bl)
+		p_bl.start()
 		p_tp = multiprocessing.Process(target=self.fetchProductToped, args=(1,return_dict))
 		p_tp.daemon = True
 		jobs.append(p_tp)

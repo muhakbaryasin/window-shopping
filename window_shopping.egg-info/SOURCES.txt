@@ -24,3 +24,4 @@ window_shopping/static/pyramid.png
 window_shopping/static/theme.css
 window_shopping/templates/layout.jinja2
 window_shopping/templates/mytemplate.jinja2
+window_shopping/templates/products.jinja2
